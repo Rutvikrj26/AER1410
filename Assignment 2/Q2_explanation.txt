@@ -1,0 +1,4 @@
+There are three contours included. After seeing the individual contours, the individual contours in the final plot can be easily differentiated.
+It can be clearly seen that the contour values match closely at the left end, where both the contour plots are yellow.
+Here, the interpolation are most accurate. The accuracy keeps decreasing as me move right, with least accurate on the right side.
+This is not a good interpolation. The value difference is in the order of the actual values and thus, the interpolation can not be accepted.

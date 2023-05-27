@@ -1,0 +1,257 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>AER1410_assignment4_q1_code</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-13"><meta name="DC.source" content="AER1410_assignment4_q1_code.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Assignment-4 Q-1</span>
+clear
+
+<span class="comment">% [ all units in GPa, mm, KN]</span>
+
+ele_X_coord = [0 200 200 0];
+ele_Y_coord = [0 0 100 100];
+
+ele_nodes = [1 2 3 4];
+
+KE = stiffness(ele_X_coord,ele_Y_coord);
+
+F = sparse(8,1); U = zeros(8,1);
+
+<span class="comment">% DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)</span>
+F(5) = 10/sqrt(2);
+F(6) = 10/sqrt(2);
+fixeddofs   = [1 2 7 8];
+alldofs     = 1:8;
+freedofs    = setdiff(alldofs,fixeddofs);
+<span class="comment">% SOLVING</span>
+U(freedofs,:) = KE(freedofs,freedofs) \ F(freedofs,:);
+U(fixeddofs,:)= 0;
+
+X = [0,200;0,200];
+Y = [0 0;100 100];
+
+dx = [U(1) U(3); U(7) U(5)];
+dy = [U(2) U(4); U(8) U(6)];
+
+X_mod = X + 10*dx;
+Y_mod = Y + 10*dy;
+
+stress_vm = stress(ele_X_coord,ele_Y_coord,U);
+
+figure(1)
+contourf(X, Y,[stress_vm(1) stress_vm(2);stress_vm(3) stress_vm(4)],100,<span class="string">'edgecolor'</span>, <span class="string">'none'</span>)
+colorbar()
+
+figure(2)
+hold <span class="string">on</span>
+ <span class="keyword">for</span> i = 1:2
+ plot(X(i,:),Y(i,:),<span class="string">'k'</span>)
+ plot(X_mod(i,:),Y_mod(i,:),<span class="string">'b'</span>)
+ <span class="keyword">end</span>
+plot(X,Y,<span class="string">'k'</span>)
+plot(X_mod,Y_mod,<span class="string">'b'</span>)
+title(<span class="string">'Mesh with &amp; w/o Deflection(10x)'</span>)
+hold <span class="string">off</span>
+
+<span class="keyword">function</span> stress_vm = stress(X,Y,Q)
+E = 120; <span class="comment">% [GPa]</span>
+nu = 0.25;
+D = (E/((1+nu)*(1-2*nu)))*[1-nu nu 0; nu 1-nu 0;0 0 0.5-nu];
+coord = [X',Y'];
+stress_temp = [];
+<span class="keyword">for</span> i = 1:2
+<span class="keyword">for</span> j = 1:2
+eta = (2*i-3);
+zeta = (2*j-3);
+J = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta]*coord;
+H = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta];
+H = J\H;
+H = [H(1,1) 0 H(1,2) 0 H(1,3) 0 H(1,4) 0; 0 H(2,1) 0 H(2,2) 0 H(2,3) 0 H(2,4); H(2,1) H(1,1) H(2,2) H(1,2) H(2,3) H(1,3) H(2,4) H(1,4)];
+stress_temp = [stress_temp D*H*Q]; <span class="comment">% Sigma XX, Sigma YY, Sigma XY</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+stress_xx = stress_temp(1,:);
+stress_yy = stress_temp(2,:);
+stress_xy = stress_temp(3,:);
+stress_vm = sqrt((stress_xx.^2 + stress_yy.^2)*(1 + nu^2 - nu) + 3*stress_xy.^2 - stress_xx.*stress_yy*(1 - 2*nu^2 + 2*nu));
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> K = stiffness(X,Y)
+E = 120; <span class="comment">% [in GPa]</span>
+nu = 0.25;
+D = (E/((1+nu)*(1-2*nu)))*[1-nu nu 0; nu 1-nu 0;0 0 0.5-nu];
+coord = [X',Y'];
+K = zeros(8,8);
+<span class="keyword">for</span> i = 1:2
+<span class="keyword">for</span> j = 1:2
+eta = (2*i-3)/sqrt(3);
+zeta = (2*j-3)/sqrt(3);
+J = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta]*coord;
+H = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta];
+H = J\H;
+H = [H(1,1) 0 H(1,2) 0 H(1,3) 0 H(1,4) 0; 0 H(2,1) 0 H(2,2) 0 H(2,3) 0 H(2,4); H(2,1) H(1,1) H(2,2) H(1,2) H(2,3) H(1,3) H(2,4) H(1,4)];
+K = K + det(J)*H'*D*H;
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="AER1410_assignment4_q1_code_01.png" alt=""> <img vspace="5" hspace="5" src="AER1410_assignment4_q1_code_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Assignment-4 Q-1
+clear
+
+% [ all units in GPa, mm, KN]
+
+ele_X_coord = [0 200 200 0];
+ele_Y_coord = [0 0 100 100];
+
+ele_nodes = [1 2 3 4];    
+
+KE = stiffness(ele_X_coord,ele_Y_coord); 
+
+F = sparse(8,1); U = zeros(8,1);
+
+% DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
+F(5) = 10/sqrt(2);
+F(6) = 10/sqrt(2);
+fixeddofs   = [1 2 7 8];
+alldofs     = 1:8;
+freedofs    = setdiff(alldofs,fixeddofs);
+% SOLVING
+U(freedofs,:) = KE(freedofs,freedofs) \ F(freedofs,:);      
+U(fixeddofs,:)= 0;
+
+X = [0,200;0,200];
+Y = [0 0;100 100];
+
+dx = [U(1) U(3); U(7) U(5)];
+dy = [U(2) U(4); U(8) U(6)];
+
+X_mod = X + 10*dx;
+Y_mod = Y + 10*dy;
+
+stress_vm = stress(ele_X_coord,ele_Y_coord,U);
+
+figure(1)
+contourf(X, Y,[stress_vm(1) stress_vm(2);stress_vm(3) stress_vm(4)],100,'edgecolor', 'none')
+colorbar()
+
+figure(2)
+hold on
+ for i = 1:2
+ plot(X(i,:),Y(i,:),'k')
+ plot(X_mod(i,:),Y_mod(i,:),'b')
+ end
+plot(X,Y,'k')
+plot(X_mod,Y_mod,'b')
+title('Mesh with & w/o Deflection(10x)')
+hold off
+
+function stress_vm = stress(X,Y,Q)
+E = 120; % [GPa]
+nu = 0.25;
+D = (E/((1+nu)*(1-2*nu)))*[1-nu nu 0; nu 1-nu 0;0 0 0.5-nu];
+coord = [X',Y'];
+stress_temp = [];
+for i = 1:2
+for j = 1:2
+eta = (2*i-3);
+zeta = (2*j-3);
+J = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta]*coord;
+H = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta];
+H = J\H;
+H = [H(1,1) 0 H(1,2) 0 H(1,3) 0 H(1,4) 0; 0 H(2,1) 0 H(2,2) 0 H(2,3) 0 H(2,4); H(2,1) H(1,1) H(2,2) H(1,2) H(2,3) H(1,3) H(2,4) H(1,4)];
+stress_temp = [stress_temp D*H*Q]; % Sigma XX, Sigma YY, Sigma XY
+end
+end
+stress_xx = stress_temp(1,:);
+stress_yy = stress_temp(2,:);
+stress_xy = stress_temp(3,:);
+stress_vm = sqrt((stress_xx.^2 + stress_yy.^2)*(1 + nu^2 - nu) + 3*stress_xy.^2 - stress_xx.*stress_yy*(1 - 2*nu^2 + 2*nu));
+end
+
+function K = stiffness(X,Y)
+E = 120; % [in GPa]
+nu = 0.25;
+D = (E/((1+nu)*(1-2*nu)))*[1-nu nu 0; nu 1-nu 0;0 0 0.5-nu];
+coord = [X',Y'];
+K = zeros(8,8);
+for i = 1:2
+for j = 1:2
+eta = (2*i-3)/sqrt(3);
+zeta = (2*j-3)/sqrt(3);
+J = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta]*coord;
+H = (1/4)*[eta-1 1-eta 1+eta -eta-1; zeta-1 -zeta-1 1+zeta 1-zeta];
+H = J\H;
+H = [H(1,1) 0 H(1,2) 0 H(1,3) 0 H(1,4) 0; 0 H(2,1) 0 H(2,2) 0 H(2,3) 0 H(2,4); H(2,1) H(1,1) H(2,2) H(1,2) H(2,3) H(1,3) H(2,4) H(1,4)];
+K = K + det(J)*H'*D*H;
+end
+end
+end
+
+ 
+##### SOURCE END #####
+--></body></html>

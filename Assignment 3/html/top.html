@@ -1,0 +1,318 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>top</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-14"><meta name="DC.source" content="top.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%%%% A 99 LINE TOPOLOGY OPTIMIZATION CODE BY OLE SIGMUND, JANUARY 2000 %%%</span>
+<span class="comment">%%%% CODE MODIFIED FOR INCREASED SPEED, September 2002, BY OLE SIGMUND %%%</span>
+<span class="keyword">function</span> top(nelx,nely,volfrac,penal,rmin);
+<span class="comment">% INITIALIZE</span>
+x(1:nely,1:nelx) = volfrac;
+loop = 0;
+change = 1.;
+<span class="comment">% START ITERATION</span>
+<span class="keyword">while</span> change &gt; 0.01
+  loop = loop + 1;
+  xold = x;
+<span class="comment">% FE-ANALYSIS</span>
+  [U]=FE(nelx,nely,x,penal);
+<span class="comment">% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS</span>
+  [KE] = lk;
+  c = 0.;
+  <span class="keyword">for</span> ely = 1:nely
+    <span class="keyword">for</span> elx = 1:nelx
+      n1 = (nely+1)*(elx-1)+ely;
+      n2 = (nely+1)* elx   +ely;
+      Ue = U([2*n1-1;2*n1; 2*n2-1;2*n2; 2*n2+1;2*n2+2; 2*n1+1;2*n1+2],1);
+      c = c + x(ely,elx)^penal*Ue'*KE*Ue;
+      dc(ely,elx) = -penal*x(ely,elx)^(penal-1)*Ue'*KE*Ue;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="comment">% FILTERING OF SENSITIVITIES</span>
+  [dc]   = check(nelx,nely,rmin,x,dc);
+<span class="comment">% DESIGN UPDATE BY THE OPTIMALITY CRITERIA METHOD</span>
+  [x]    = OC(nelx,nely,x,volfrac,dc);
+<span class="comment">% PRINT RESULTS</span>
+  change = max(max(abs(x-xold)));
+  disp([<span class="string">' It.: '</span> sprintf(<span class="string">'%4i'</span>,loop) <span class="string">' Obj.: '</span> sprintf(<span class="string">'%10.4f'</span>,c) <span class="keyword">...</span>
+       <span class="string">' Vol.: '</span> sprintf(<span class="string">'%6.3f'</span>,sum(sum(x))/(nelx*nely)) <span class="keyword">...</span>
+        <span class="string">' ch.: '</span> sprintf(<span class="string">'%6.3f'</span>,change )])
+<span class="comment">% PLOT DENSITIES</span>
+  colormap(gray); imagesc(-x); axis <span class="string">equal</span>; axis <span class="string">tight</span>; axis <span class="string">off</span>;pause(1e-6);
+<span class="keyword">end</span>
+<span class="comment">%%%%%%%%%% OPTIMALITY CRITERIA UPDATE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="keyword">function</span> [xnew]=OC(nelx,nely,x,volfrac,dc)
+l1 = 0; l2 = 100000; move = 0.2;
+<span class="keyword">while</span> (l2-l1 &gt; 1e-4)
+  lmid = 0.5*(l2+l1);
+  xnew = max(0.001,max(x-move,min(1.,min(x+move,x.*sqrt(-dc./lmid)))));
+  <span class="keyword">if</span> sum(sum(xnew)) - volfrac*nelx*nely &gt; 0;
+    l1 = lmid;
+  <span class="keyword">else</span>
+    l2 = lmid;
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%%%%%%%%%% MESH-INDEPENDENCY FILTER %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="keyword">function</span> [dcn]=check(nelx,nely,rmin,x,dc)
+dcn=zeros(nely,nelx);
+<span class="keyword">for</span> i = 1:nelx
+  <span class="keyword">for</span> j = 1:nely
+    sum=0.0;
+    <span class="keyword">for</span> k = max(i-floor(rmin),1):min(i+floor(rmin),nelx)
+      <span class="keyword">for</span> l = max(j-floor(rmin),1):min(j+floor(rmin),nely)
+        fac = rmin-sqrt((i-k)^2+(j-l)^2);
+        sum = sum+max(0,fac);
+        dcn(j,i) = dcn(j,i) + max(0,fac)*x(l,k)*dc(l,k);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    dcn(j,i) = dcn(j,i)/(x(j,i)*sum);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%%%%%%%%%% FE-ANALYSIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="keyword">function</span> [U]=FE(nelx,nely,x,penal)
+[KE] = lk;
+K = sparse(2*(nelx+1)*(nely+1), 2*(nelx+1)*(nely+1));
+F = sparse(2*(nely+1)*(nelx+1),1); U = zeros(2*(nely+1)*(nelx+1),1);
+<span class="keyword">for</span> elx = 1:nelx
+  <span class="keyword">for</span> ely = 1:nely
+    n1 = (nely+1)*(elx-1)+ely;
+    n2 = (nely+1)* elx   +ely;
+    edof = [2*n1-1; 2*n1; 2*n2-1; 2*n2; 2*n2+1; 2*n2+2; 2*n1+1; 2*n1+2];
+    K(edof,edof) = K(edof,edof) + x(ely,elx)^penal*KE;
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">% DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)</span>
+F(2,1) = -1;
+fixeddofs   = union([1:2:2*(nely+1)],[2*(nelx+1)*(nely+1)]);
+alldofs     = [1:2*(nely+1)*(nelx+1)];
+freedofs    = setdiff(alldofs,fixeddofs);
+<span class="comment">% SOLVING</span>
+U(freedofs,:) = K(freedofs,freedofs) \ F(freedofs,:);
+U(fixeddofs,:)= 0;
+<span class="comment">%%%%%%%%%% ELEMENT STIFFNESS MATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="keyword">function</span> [KE]=lk
+E = 1.;
+nu = 0.3;
+k=[ 1/2-nu/6   1/8+nu/8 -1/4-nu/12 -1/8+3*nu/8 <span class="keyword">...</span>
+   -1/4+nu/12 -1/8-nu/8  nu/6       1/8-3*nu/8];
+KE = E/(1-nu^2)*[ k(1) k(2) k(3) k(4) k(5) k(6) k(7) k(8)
+                  k(2) k(1) k(8) k(7) k(6) k(5) k(4) k(3)
+                  k(3) k(8) k(1) k(6) k(7) k(4) k(5) k(2)
+                  k(4) k(7) k(6) k(1) k(8) k(3) k(2) k(5)
+                  k(5) k(6) k(7) k(8) k(1) k(2) k(3) k(4)
+                  k(6) k(5) k(4) k(3) k(2) k(1) k(8) k(7)
+                  k(7) k(4) k(5) k(2) k(3) k(8) k(1) k(6)
+                  k(8) k(3) k(2) k(5) k(4) k(7) k(6) k(1)];
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% This Matlab code was written by Ole Sigmund, Department of Solid         %</span>
+<span class="comment">% Mechanics, Technical University of Denmark, DK-2800 Lyngby, Denmark.     %</span>
+<span class="comment">% Please sent your comments to the author: sigmund@fam.dtu.dk              %</span>
+<span class="comment">%                                                                          %</span>
+<span class="comment">% The code is intended for educational purposes and theoretical details    %</span>
+<span class="comment">% are discussed in the paper                                               %</span>
+<span class="comment">% "A 99 line topology optimization code written in Matlab"                 %</span>
+<span class="comment">% by Ole Sigmund (2001), Structural and Multidisciplinary Optimization,    %</span>
+<span class="comment">% Vol 21, pp. 120--127.                                                    %</span>
+<span class="comment">%                                                                          %</span>
+<span class="comment">% The code as well as a postscript version of the paper can be             %</span>
+<span class="comment">% downloaded from the web-site: http://www.topopt.dtu.dk                   %</span>
+<span class="comment">%                                                                          %</span>
+<span class="comment">% Disclaimer:                                                              %</span>
+<span class="comment">% The author reserves all rights but does not guaranty that the code is    %</span>
+<span class="comment">% free from errors. Furthermore, he shall not be liable in any event       %</span>
+<span class="comment">% caused by the use of the program.                                        %</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in top (line 5)
+x(1:nely,1:nelx) = volfrac; 
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%% A 99 LINE TOPOLOGY OPTIMIZATION CODE BY OLE SIGMUND, JANUARY 2000 %%%
+%%%% CODE MODIFIED FOR INCREASED SPEED, September 2002, BY OLE SIGMUND %%%
+function top(nelx,nely,volfrac,penal,rmin);
+% INITIALIZE
+x(1:nely,1:nelx) = volfrac; 
+loop = 0; 
+change = 1.;
+% START ITERATION
+while change > 0.01  
+  loop = loop + 1;
+  xold = x;
+% FE-ANALYSIS
+  [U]=FE(nelx,nely,x,penal);         
+% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
+  [KE] = lk;
+  c = 0.;
+  for ely = 1:nely
+    for elx = 1:nelx
+      n1 = (nely+1)*(elx-1)+ely; 
+      n2 = (nely+1)* elx   +ely;
+      Ue = U([2*n1-1;2*n1; 2*n2-1;2*n2; 2*n2+1;2*n2+2; 2*n1+1;2*n1+2],1);
+      c = c + x(ely,elx)^penal*Ue'*KE*Ue;
+      dc(ely,elx) = -penal*x(ely,elx)^(penal-1)*Ue'*KE*Ue;
+    end
+  end
+% FILTERING OF SENSITIVITIES
+  [dc]   = check(nelx,nely,rmin,x,dc);    
+% DESIGN UPDATE BY THE OPTIMALITY CRITERIA METHOD
+  [x]    = OC(nelx,nely,x,volfrac,dc); 
+% PRINT RESULTS
+  change = max(max(abs(x-xold)));
+  disp([' It.: ' sprintf('%4i',loop) ' Obj.: ' sprintf('%10.4f',c) ...
+       ' Vol.: ' sprintf('%6.3f',sum(sum(x))/(nelx*nely)) ...
+        ' ch.: ' sprintf('%6.3f',change )])
+% PLOT DENSITIES  
+  colormap(gray); imagesc(-x); axis equal; axis tight; axis off;pause(1e-6);
+end 
+%%%%%%%%%% OPTIMALITY CRITERIA UPDATE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [xnew]=OC(nelx,nely,x,volfrac,dc)  
+l1 = 0; l2 = 100000; move = 0.2;
+while (l2-l1 > 1e-4)
+  lmid = 0.5*(l2+l1);
+  xnew = max(0.001,max(x-move,min(1.,min(x+move,x.*sqrt(-dc./lmid)))));
+  if sum(sum(xnew)) - volfrac*nelx*nely > 0;
+    l1 = lmid;
+  else
+    l2 = lmid;
+  end
+end
+%%%%%%%%%% MESH-INDEPENDENCY FILTER %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [dcn]=check(nelx,nely,rmin,x,dc)
+dcn=zeros(nely,nelx);
+for i = 1:nelx
+  for j = 1:nely
+    sum=0.0; 
+    for k = max(i-floor(rmin),1):min(i+floor(rmin),nelx)
+      for l = max(j-floor(rmin),1):min(j+floor(rmin),nely)
+        fac = rmin-sqrt((i-k)^2+(j-l)^2);
+        sum = sum+max(0,fac);
+        dcn(j,i) = dcn(j,i) + max(0,fac)*x(l,k)*dc(l,k);
+      end
+    end
+    dcn(j,i) = dcn(j,i)/(x(j,i)*sum);
+  end
+end
+%%%%%%%%%% FE-ANALYSIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [U]=FE(nelx,nely,x,penal)
+[KE] = lk; 
+K = sparse(2*(nelx+1)*(nely+1), 2*(nelx+1)*(nely+1));
+F = sparse(2*(nely+1)*(nelx+1),1); U = zeros(2*(nely+1)*(nelx+1),1);
+for elx = 1:nelx
+  for ely = 1:nely
+    n1 = (nely+1)*(elx-1)+ely; 
+    n2 = (nely+1)* elx   +ely;
+    edof = [2*n1-1; 2*n1; 2*n2-1; 2*n2; 2*n2+1; 2*n2+2; 2*n1+1; 2*n1+2];
+    K(edof,edof) = K(edof,edof) + x(ely,elx)^penal*KE;
+  end
+end
+% DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
+F(2,1) = -1;
+fixeddofs   = union([1:2:2*(nely+1)],[2*(nelx+1)*(nely+1)]);
+alldofs     = [1:2*(nely+1)*(nelx+1)];
+freedofs    = setdiff(alldofs,fixeddofs);
+% SOLVING
+U(freedofs,:) = K(freedofs,freedofs) \ F(freedofs,:);      
+U(fixeddofs,:)= 0;
+%%%%%%%%%% ELEMENT STIFFNESS MATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [KE]=lk
+E = 1.; 
+nu = 0.3;
+k=[ 1/2-nu/6   1/8+nu/8 -1/4-nu/12 -1/8+3*nu/8 ... 
+   -1/4+nu/12 -1/8-nu/8  nu/6       1/8-3*nu/8];
+KE = E/(1-nu^2)*[ k(1) k(2) k(3) k(4) k(5) k(6) k(7) k(8)
+                  k(2) k(1) k(8) k(7) k(6) k(5) k(4) k(3)
+                  k(3) k(8) k(1) k(6) k(7) k(4) k(5) k(2)
+                  k(4) k(7) k(6) k(1) k(8) k(3) k(2) k(5)
+                  k(5) k(6) k(7) k(8) k(1) k(2) k(3) k(4)
+                  k(6) k(5) k(4) k(3) k(2) k(1) k(8) k(7)
+                  k(7) k(4) k(5) k(2) k(3) k(8) k(1) k(6)
+                  k(8) k(3) k(2) k(5) k(4) k(7) k(6) k(1)];
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This Matlab code was written by Ole Sigmund, Department of Solid         %
+% Mechanics, Technical University of Denmark, DK-2800 Lyngby, Denmark.     %
+% Please sent your comments to the author: sigmund@fam.dtu.dk              %
+%                                                                          %
+% The code is intended for educational purposes and theoretical details    %
+% are discussed in the paper                                               %
+% "A 99 line topology optimization code written in Matlab"                 %
+% by Ole Sigmund (2001), Structural and Multidisciplinary Optimization,    %
+% Vol 21, pp. 120REPLACE_WITH_DASH_DASH127.                                                    %
+%                                                                          %
+% The code as well as a postscript version of the paper can be             %
+% downloaded from the web-site: http://www.topopt.dtu.dk                   %
+%                                                                          %
+% Disclaimer:                                                              %
+% The author reserves all rights but does not guaranty that the code is    %
+% free from errors. Furthermore, he shall not be liable in any event       %
+% caused by the use of the program.                                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+##### SOURCE END #####
+--></body></html>

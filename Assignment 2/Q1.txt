@@ -1,0 +1,9 @@
+For the given Structural problem, I am currently inclined towards gradient free optimization methods 
+as I can not find the way to represent the discreet density function as a continuous function.
+
+Mostly we go for gradient based optimzation as far as possible. In this case, the density is a discreet function.
+The Density is either 1 or 0 and hence, it is not possible to calculate the gradient.
+This makes it problematic to use gradient-based optimization method.
+If we somehow rewrite the problem formulation such that the Discreet nature of Density is converted to continous,
+we would surely go for a gradient-based optimization. Here, since I am not able to formulate the problem in such way,
+I will be proceeding with Gradient-free optimization

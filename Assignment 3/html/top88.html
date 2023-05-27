@@ -1,0 +1,546 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>top88</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-24"><meta name="DC.source" content="top88.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Basic Inputs</a></li><li><a href="#3">Setting up the Geometry</a></li><li><a href="#4">MATERIAL PROPERTIES</a></li><li><a href="#5">PREPARE FINITE ELEMENT ANALYSIS</a></li><li><a href="#6">PREPARE FILTER</a></li><li><a href="#7">INITIALIZE ITERATION</a></li><li><a href="#8">START ITERATION</a></li><li><a href="#10">FE-ANALYSIS</a></li><li><a href="#11">OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS</a></li><li><a href="#12">FILTERING/MODIFICATION OF SENSITIVITIES</a></li><li><a href="#13">OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES</a></li><li><a href="#14">PRINT RESULTS</a></li><li><a href="#15">PLOT DENSITIES</a></li></ul></div><pre class="codeinput"><span class="comment">%%%% AN 88 LINE TOPOLOGY OPTIMIZATION CODE Nov, 2010 %%%%</span>
+clear
+</pre><h2 id="2">Basic Inputs</h2><pre class="codeinput"><span class="comment">% Student Number = 1008247531;</span>
+
+A = 5; B = 3; C = 1;
+</pre><h2 id="3">Setting up the Geometry</h2><pre class="codeinput">base_width = 50 + 70 + 10*B;
+tot_height = 250 + 10*A;
+
+P1 = 3;
+P2 = P1/(0.5*(C+1));
+
+nelx = base_width;
+nely = tot_height;
+volfrac = 0.166;
+penal = 3;
+rmin = 5;
+ft = 1;
+</pre><h2 id="4">MATERIAL PROPERTIES</h2><pre class="codeinput">E0 = 69;
+Emin = 1e-9;
+nu = 0.3;
+</pre><h2 id="5">PREPARE FINITE ELEMENT ANALYSIS</h2><pre class="codeinput">A11 = [12  3 -6 -3;  3 12  3  0; -6  3 12 -3; -3  0 -3 12];
+A12 = [-6 -3  0  3; -3 -6 -3 -6;  0 -3 -6  3;  3 -6  3 -6];
+B11 = [-4  3 -2  9;  3 -4 -9  4; -2 -9 -4 -3;  9  4 -3 -4];
+B12 = [ 2 -3  4 -9; -3  2  9 -2;  4  9  2  3; -9 -2  3  2];
+KE = 1/(1-nu^2)/24*([A11 A12;A12' A11]+nu*[B11 B12;B12' B11]);
+nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
+edofVec = reshape(2*nodenrs(1:end-1,1:end-1)+1,nelx*nely,1);
+edofMat = repmat(edofVec,1,8)+repmat([0 1 2*nely+[2 3 0 1] -2 -1],nelx*nely,1);
+iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);
+jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
+<span class="comment">% DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)</span>
+F = sparse(2,1,-1,2*(nely+1)*(nelx+1),1);
+U = zeros(2*(nely+1)*(nelx+1),1);
+F(2*(nely+1)) = -P1;
+F(2*(nely+1)*(nelx+1)) = -P2;
+fixeddofs   = union(2*[(nely+1)*(0)+1]:2*(nely+1):2*[(nely+1)*(nelx)+1], 2*[(nely+1)*(0)+1]-1:2*(nely+1):2*[(nely+1)*(nelx)+1]-1);
+alldofs     = [1:2*(nely+1)*(nelx+1)];
+freedofs    = setdiff(alldofs,fixeddofs);
+</pre><h2 id="6">PREPARE FILTER</h2><pre class="codeinput">iH = ones(nelx*nely*(2*(ceil(rmin)-1)+1)^2,1);
+jH = ones(size(iH));
+sH = zeros(size(iH));
+k = 0;
+<span class="keyword">for</span> i1 = 1:nelx
+  <span class="keyword">for</span> j1 = 1:nely
+    e1 = (i1-1)*nely+j1;
+    <span class="keyword">for</span> i2 = max(i1-(ceil(rmin)-1),1):min(i1+(ceil(rmin)-1),nelx)
+      <span class="keyword">for</span> j2 = max(j1-(ceil(rmin)-1),1):min(j1+(ceil(rmin)-1),nely)
+        e2 = (i2-1)*nely+j2;
+        k = k+1;
+        iH(k) = e1;
+        jH(k) = e2;
+        sH(k) = max(0,rmin-sqrt((i1-i2)^2+(j1-j2)^2));
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+H = sparse(iH,jH,sH);
+Hs = sum(H,2);
+</pre><h2 id="7">INITIALIZE ITERATION</h2><pre class="codeinput">x = repmat(volfrac,nely,nelx);
+<span class="keyword">for</span> ely = 1:nely
+    <span class="keyword">for</span> elx = 1:nelx
+        <span class="keyword">if</span> (ely &lt; tot_height-50) &amp;&amp; (elx &lt; 50 || elx &gt; 100)
+            passive(ely,elx) = 1;
+        <span class="keyword">else</span>
+            passive(ely,elx) = 0;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+x(find(passive))=0.001;
+
+xPhys = x;
+loop = 0;
+change = 1;
+</pre><h2 id="8">START ITERATION</h2><pre class="codeinput"><span class="keyword">while</span> change &gt; 0.01
+</pre><pre class="codeinput">  loop = loop + 1;
+</pre><h2 id="10">FE-ANALYSIS</h2><pre class="codeinput">  sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1);
+  K = sparse(iK,jK,sK); K = (K+K')/2;
+  U(freedofs) = K(freedofs,freedofs)\F(freedofs);
+</pre><h2 id="11">OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS</h2><pre class="codeinput">  ce = reshape(sum((U(edofMat)*KE).*U(edofMat),2),nely,nelx);
+  c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce));
+  dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
+  dv = ones(nely,nelx);
+</pre><h2 id="12">FILTERING/MODIFICATION OF SENSITIVITIES</h2><pre class="codeinput">  <span class="keyword">if</span> ft == 1
+    dc(:) = H*(x(:).*dc(:))./Hs./max(1e-3,x(:));
+  <span class="keyword">elseif</span> ft == 2
+    dc(:) = H*(dc(:)./Hs);
+    dv(:) = H*(dv(:)./Hs);
+  <span class="keyword">end</span>
+</pre><h2 id="13">OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES</h2><pre class="codeinput">  l1 = 0; l2 = 1e9; move = 0.2;
+  <span class="keyword">while</span> (l2-l1)/(l1+l2) &gt; 1e-3
+    lmid = 0.5*(l2+l1);
+    xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));
+    xnew(find(passive)) = 0.001;
+    <span class="keyword">if</span> ft == 1
+      xPhys = xnew;
+    <span class="keyword">elseif</span> ft == 2
+      xPhys(:) = (H*xnew(:))./Hs;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> sum(xPhys(:)) &gt; volfrac*nelx*nely, l1 = lmid; <span class="keyword">else</span> l2 = lmid; <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  change = max(abs(xnew(:)-x(:)));
+  x = xnew;
+</pre><h2 id="14">PRINT RESULTS</h2><pre class="codeinput">  fprintf(<span class="string">' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n'</span>,loop,c, <span class="keyword">...</span>
+    mean(xPhys(:)),change);
+</pre><pre class="codeoutput"> It.:    1 Obj.:  1721.6432 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:    2 Obj.:   160.6292 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:    3 Obj.:   107.1033 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:    4 Obj.:    81.7154 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:    5 Obj.:    66.3158 Vol.:  0.166 ch.:  0.195
+</pre><pre class="codeoutput"> It.:    6 Obj.:    54.3158 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:    7 Obj.:    46.4497 Vol.:  0.166 ch.:  0.184
+</pre><pre class="codeoutput"> It.:    8 Obj.:    39.6433 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:    9 Obj.:    33.7981 Vol.:  0.166 ch.:  0.172
+</pre><pre class="codeoutput"> It.:   10 Obj.:    28.6036 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:   11 Obj.:    24.4132 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:   12 Obj.:    21.4632 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:   13 Obj.:    19.8396 Vol.:  0.166 ch.:  0.170
+</pre><pre class="codeoutput"> It.:   14 Obj.:    19.1211 Vol.:  0.166 ch.:  0.114
+</pre><pre class="codeoutput"> It.:   15 Obj.:    18.9011 Vol.:  0.166 ch.:  0.066
+</pre><pre class="codeoutput"> It.:   16 Obj.:    18.8273 Vol.:  0.166 ch.:  0.039
+</pre><pre class="codeoutput"> It.:   17 Obj.:    18.8064 Vol.:  0.166 ch.:  0.027
+</pre><pre class="codeoutput"> It.:   18 Obj.:    18.7992 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   19 Obj.:    18.7962 Vol.:  0.166 ch.:  0.016
+</pre><pre class="codeoutput"> It.:   20 Obj.:    18.7881 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   21 Obj.:    18.7949 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   22 Obj.:    18.7808 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   23 Obj.:    18.7888 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   24 Obj.:    18.7765 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   25 Obj.:    18.7855 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   26 Obj.:    18.7737 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   27 Obj.:    18.7705 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   28 Obj.:    18.7683 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   29 Obj.:    18.7670 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   30 Obj.:    18.7663 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   31 Obj.:    18.7528 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   32 Obj.:    18.7613 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   33 Obj.:    18.7498 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   34 Obj.:    18.7467 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   35 Obj.:    18.7449 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   36 Obj.:    18.7437 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   37 Obj.:    18.7428 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   38 Obj.:    18.7293 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   39 Obj.:    18.7253 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   40 Obj.:    18.7227 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   41 Obj.:    18.7212 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   42 Obj.:    18.7204 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   43 Obj.:    18.7197 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   44 Obj.:    18.7061 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   45 Obj.:    18.7149 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   46 Obj.:    18.7033 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   47 Obj.:    18.7002 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   48 Obj.:    18.6984 Vol.:  0.166 ch.:  0.017
+</pre><pre class="codeoutput"> It.:   49 Obj.:    18.6976 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   50 Obj.:    18.6838 Vol.:  0.166 ch.:  0.016
+</pre><pre class="codeoutput"> It.:   51 Obj.:    18.6924 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   52 Obj.:    18.6808 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   53 Obj.:    18.6779 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   54 Obj.:    18.6760 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   55 Obj.:    18.6750 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   56 Obj.:    18.6743 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   57 Obj.:    18.6607 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   58 Obj.:    18.6564 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   59 Obj.:    18.6540 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   60 Obj.:    18.6526 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   61 Obj.:    18.6519 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   62 Obj.:    18.6511 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   63 Obj.:    18.6380 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   64 Obj.:    18.6335 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   65 Obj.:    18.6311 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   66 Obj.:    18.6296 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   67 Obj.:    18.6287 Vol.:  0.166 ch.:  0.018
+</pre><pre class="codeoutput"> It.:   68 Obj.:    18.6279 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   69 Obj.:    18.6146 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   70 Obj.:    18.6103 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   71 Obj.:    18.6078 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   72 Obj.:    18.6066 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   73 Obj.:    18.6057 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   74 Obj.:    18.5926 Vol.:  0.166 ch.:  0.019
+</pre><pre class="codeoutput"> It.:   75 Obj.:    18.6011 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   76 Obj.:    18.5895 Vol.:  0.166 ch.:  0.020
+</pre><pre class="codeoutput"> It.:   77 Obj.:    18.5865 Vol.:  0.166 ch.:  0.020
+</pre><pre class="codeoutput"> It.:   78 Obj.:    18.5843 Vol.:  0.166 ch.:  0.020
+</pre><pre class="codeoutput"> It.:   79 Obj.:    18.5831 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   80 Obj.:    18.5694 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   81 Obj.:    18.5647 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   82 Obj.:    18.5620 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   83 Obj.:    18.5606 Vol.:  0.166 ch.:  0.021
+</pre><pre class="codeoutput"> It.:   84 Obj.:    18.5595 Vol.:  0.166 ch.:  0.022
+</pre><pre class="codeoutput"> It.:   85 Obj.:    18.5462 Vol.:  0.166 ch.:  0.022
+</pre><pre class="codeoutput"> It.:   86 Obj.:    18.5417 Vol.:  0.166 ch.:  0.022
+</pre><pre class="codeoutput"> It.:   87 Obj.:    18.5390 Vol.:  0.166 ch.:  0.022
+</pre><pre class="codeoutput"> It.:   88 Obj.:    18.5375 Vol.:  0.166 ch.:  0.023
+</pre><pre class="codeoutput"> It.:   89 Obj.:    18.5364 Vol.:  0.166 ch.:  0.024
+</pre><pre class="codeoutput"> It.:   90 Obj.:    18.5230 Vol.:  0.166 ch.:  0.024
+</pre><pre class="codeoutput"> It.:   91 Obj.:    18.5186 Vol.:  0.166 ch.:  0.024
+</pre><pre class="codeoutput"> It.:   92 Obj.:    18.5159 Vol.:  0.166 ch.:  0.024
+</pre><pre class="codeoutput"> It.:   93 Obj.:    18.5144 Vol.:  0.166 ch.:  0.024
+</pre><pre class="codeoutput"> It.:   94 Obj.:    18.5133 Vol.:  0.166 ch.:  0.029
+</pre><pre class="codeoutput"> It.:   95 Obj.:    18.4999 Vol.:  0.166 ch.:  0.029
+</pre><pre class="codeoutput"> It.:   96 Obj.:    18.4952 Vol.:  0.166 ch.:  0.027
+</pre><pre class="codeoutput"> It.:   97 Obj.:    18.4923 Vol.:  0.166 ch.:  0.025
+</pre><pre class="codeoutput"> It.:   98 Obj.:    18.4906 Vol.:  0.166 ch.:  0.028
+</pre><pre class="codeoutput"> It.:   99 Obj.:    18.4768 Vol.:  0.166 ch.:  0.039
+</pre><pre class="codeoutput"> It.:  100 Obj.:    18.4718 Vol.:  0.166 ch.:  0.037
+</pre><pre class="codeoutput"> It.:  101 Obj.:    18.4689 Vol.:  0.166 ch.:  0.036
+</pre><pre class="codeoutput"> It.:  102 Obj.:    18.4673 Vol.:  0.166 ch.:  0.029
+</pre><pre class="codeoutput"> It.:  103 Obj.:    18.4536 Vol.:  0.166 ch.:  0.043
+</pre><pre class="codeoutput"> It.:  104 Obj.:    18.4489 Vol.:  0.166 ch.:  0.051
+</pre><pre class="codeoutput"> It.:  105 Obj.:    18.4460 Vol.:  0.166 ch.:  0.049
+</pre><pre class="codeoutput"> It.:  106 Obj.:    18.4442 Vol.:  0.166 ch.:  0.046
+</pre><pre class="codeoutput"> It.:  107 Obj.:    18.4304 Vol.:  0.166 ch.:  0.059
+</pre><pre class="codeoutput"> It.:  108 Obj.:    18.4252 Vol.:  0.166 ch.:  0.062
+</pre><pre class="codeoutput"> It.:  109 Obj.:    18.4219 Vol.:  0.166 ch.:  0.067
+</pre><pre class="codeoutput"> It.:  110 Obj.:    18.4201 Vol.:  0.166 ch.:  0.069
+</pre><pre class="codeoutput"> It.:  111 Obj.:    18.4061 Vol.:  0.166 ch.:  0.070
+</pre><pre class="codeoutput"> It.:  112 Obj.:    18.4010 Vol.:  0.166 ch.:  0.063
+</pre><pre class="codeoutput"> It.:  113 Obj.:    18.3981 Vol.:  0.166 ch.:  0.050
+</pre><pre class="codeoutput"> It.:  114 Obj.:    18.3838 Vol.:  0.166 ch.:  0.063
+</pre><pre class="codeoutput"> It.:  115 Obj.:    18.3783 Vol.:  0.166 ch.:  0.090
+</pre><pre class="codeoutput"> It.:  116 Obj.:    18.3749 Vol.:  0.166 ch.:  0.087
+</pre><pre class="codeoutput"> It.:  117 Obj.:    18.3730 Vol.:  0.166 ch.:  0.073
+</pre><pre class="codeoutput"> It.:  118 Obj.:    18.3591 Vol.:  0.166 ch.:  0.058
+</pre><pre class="codeoutput"> It.:  119 Obj.:    18.3540 Vol.:  0.166 ch.:  0.084
+</pre><pre class="codeoutput"> It.:  120 Obj.:    18.3381 Vol.:  0.166 ch.:  0.122
+</pre><pre class="codeoutput"> It.:  121 Obj.:    18.3321 Vol.:  0.166 ch.:  0.119
+</pre><pre class="codeoutput"> It.:  122 Obj.:    18.3284 Vol.:  0.166 ch.:  0.095
+</pre><pre class="codeoutput"> It.:  123 Obj.:    18.3140 Vol.:  0.166 ch.:  0.073
+</pre><pre class="codeoutput"> It.:  124 Obj.:    18.3087 Vol.:  0.166 ch.:  0.108
+</pre><pre class="codeoutput"> It.:  125 Obj.:    18.3057 Vol.:  0.166 ch.:  0.158
+</pre><pre class="codeoutput"> It.:  126 Obj.:    18.2917 Vol.:  0.166 ch.:  0.153
+</pre><pre class="codeoutput"> It.:  127 Obj.:    18.2866 Vol.:  0.166 ch.:  0.126
+</pre><pre class="codeoutput"> It.:  128 Obj.:    18.2711 Vol.:  0.166 ch.:  0.099
+</pre><pre class="codeoutput"> It.:  129 Obj.:    18.2656 Vol.:  0.166 ch.:  0.134
+</pre><pre class="codeoutput"> It.:  130 Obj.:    18.2625 Vol.:  0.166 ch.:  0.197
+</pre><pre class="codeoutput"> It.:  131 Obj.:    18.2485 Vol.:  0.166 ch.:  0.185
+</pre><pre class="codeoutput"> It.:  132 Obj.:    18.2431 Vol.:  0.166 ch.:  0.184
+</pre><pre class="codeoutput"> It.:  133 Obj.:    18.2403 Vol.:  0.166 ch.:  0.152
+</pre><pre class="codeoutput"> It.:  134 Obj.:    18.2269 Vol.:  0.166 ch.:  0.155
+</pre><pre class="codeoutput"> It.:  135 Obj.:    18.2225 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  136 Obj.:    18.2076 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  137 Obj.:    18.2020 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  138 Obj.:    18.1991 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  139 Obj.:    18.1985 Vol.:  0.166 ch.:  0.173
+</pre><pre class="codeoutput"> It.:  140 Obj.:    18.1863 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  141 Obj.:    18.1821 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  142 Obj.:    18.1801 Vol.:  0.166 ch.:  0.187
+</pre><pre class="codeoutput"> It.:  143 Obj.:    18.1802 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  144 Obj.:    18.1687 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  145 Obj.:    18.1773 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  146 Obj.:    18.1671 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  147 Obj.:    18.1640 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  148 Obj.:    18.1741 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  149 Obj.:    18.1666 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  150 Obj.:    18.1645 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  151 Obj.:    18.1626 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  152 Obj.:    18.1731 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  153 Obj.:    18.1636 Vol.:  0.166 ch.:  0.185
+</pre><pre class="codeoutput"> It.:  154 Obj.:    18.1609 Vol.:  0.166 ch.:  0.172
+</pre><pre class="codeoutput"> It.:  155 Obj.:    18.1597 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  156 Obj.:    18.1604 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  157 Obj.:    18.1605 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  158 Obj.:    18.1600 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  159 Obj.:    18.1597 Vol.:  0.166 ch.:  0.168
+</pre><pre class="codeoutput"> It.:  160 Obj.:    18.1480 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  161 Obj.:    18.1566 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  162 Obj.:    18.1584 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  163 Obj.:    18.1595 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  164 Obj.:    18.1466 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  165 Obj.:    18.1533 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  166 Obj.:    18.1547 Vol.:  0.166 ch.:  0.177
+</pre><pre class="codeoutput"> It.:  167 Obj.:    18.1448 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  168 Obj.:    18.1419 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  169 Obj.:    18.1523 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  170 Obj.:    18.1435 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  171 Obj.:    18.1411 Vol.:  0.166 ch.:  0.185
+</pre><pre class="codeoutput"> It.:  172 Obj.:    18.1396 Vol.:  0.166 ch.:  0.074
+</pre><pre class="codeoutput"> It.:  173 Obj.:    18.1405 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  174 Obj.:    18.1407 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  175 Obj.:    18.1405 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  176 Obj.:    18.1397 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  177 Obj.:    18.1388 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  178 Obj.:    18.1385 Vol.:  0.166 ch.:  0.152
+</pre><pre class="codeoutput"> It.:  179 Obj.:    18.1392 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  180 Obj.:    18.1402 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  181 Obj.:    18.1405 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  182 Obj.:    18.1402 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  183 Obj.:    18.1396 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  184 Obj.:    18.1391 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  185 Obj.:    18.1393 Vol.:  0.166 ch.:  0.170
+</pre><pre class="codeoutput"> It.:  186 Obj.:    18.1397 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  187 Obj.:    18.1404 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  188 Obj.:    18.1405 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  189 Obj.:    18.1403 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  190 Obj.:    18.1398 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  191 Obj.:    18.1398 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  192 Obj.:    18.1274 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  193 Obj.:    18.1349 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  194 Obj.:    18.1368 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  195 Obj.:    18.1386 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  196 Obj.:    18.1267 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  197 Obj.:    18.1348 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  198 Obj.:    18.1366 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  199 Obj.:    18.1256 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  200 Obj.:    18.1332 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  201 Obj.:    18.1352 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  202 Obj.:    18.1251 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  203 Obj.:    18.1336 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  204 Obj.:    18.1232 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  205 Obj.:    18.1320 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  206 Obj.:    18.1339 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  207 Obj.:    18.1241 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  208 Obj.:    18.1326 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  209 Obj.:    18.1223 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  210 Obj.:    18.1308 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  211 Obj.:    18.1199 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  212 Obj.:    18.1292 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  213 Obj.:    18.1188 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  214 Obj.:    18.1172 Vol.:  0.166 ch.:  0.200
+</pre><pre class="codeoutput"> It.:  215 Obj.:    18.1172 Vol.:  0.166 ch.:  0.173
+</pre><pre class="codeoutput"> It.:  216 Obj.:    18.1178 Vol.:  0.166 ch.:  0.013
+</pre><pre class="codeoutput"> It.:  217 Obj.:    18.1191 Vol.:  0.166 ch.:  0.016
+</pre><pre class="codeoutput"> It.:  218 Obj.:    18.1200 Vol.:  0.166 ch.:  0.024
+</pre><pre class="codeoutput"> It.:  219 Obj.:    18.1204 Vol.:  0.166 ch.:  0.022
+</pre><pre class="codeoutput"> It.:  220 Obj.:    18.1084 Vol.:  0.166 ch.:  0.015
+</pre><pre class="codeoutput"> It.:  221 Obj.:    18.1160 Vol.:  0.166 ch.:  0.010
+</pre><pre class="codeoutput"> It.:  222 Obj.:    18.1177 Vol.:  0.166 ch.:  0.006
+</pre><h2 id="15">PLOT DENSITIES</h2><pre class="codeinput">  colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis <span class="string">equal</span>; axis <span class="string">off</span>; drawnow;
+</pre><img vspace="5" hspace="5" src="top88_01.png" alt=""> <img vspace="5" hspace="5" src="top88_02.png" alt=""> <img vspace="5" hspace="5" src="top88_03.png" alt=""> <img vspace="5" hspace="5" src="top88_04.png" alt=""> <img vspace="5" hspace="5" src="top88_05.png" alt=""> <img vspace="5" hspace="5" src="top88_06.png" alt=""> <img vspace="5" hspace="5" src="top88_07.png" alt=""> <img vspace="5" hspace="5" src="top88_08.png" alt=""> <img vspace="5" hspace="5" src="top88_09.png" alt=""> <img vspace="5" hspace="5" src="top88_10.png" alt=""> <img vspace="5" hspace="5" src="top88_11.png" alt=""> <img vspace="5" hspace="5" src="top88_12.png" alt=""> <img vspace="5" hspace="5" src="top88_13.png" alt=""> <img vspace="5" hspace="5" src="top88_14.png" alt=""> <img vspace="5" hspace="5" src="top88_15.png" alt=""> <img vspace="5" hspace="5" src="top88_16.png" alt=""> <img vspace="5" hspace="5" src="top88_17.png" alt=""> <img vspace="5" hspace="5" src="top88_18.png" alt=""> <img vspace="5" hspace="5" src="top88_19.png" alt=""> <img vspace="5" hspace="5" src="top88_20.png" alt=""> <img vspace="5" hspace="5" src="top88_21.png" alt=""> <img vspace="5" hspace="5" src="top88_22.png" alt=""> <img vspace="5" hspace="5" src="top88_23.png" alt=""> <img vspace="5" hspace="5" src="top88_24.png" alt=""> <img vspace="5" hspace="5" src="top88_25.png" alt=""> <img vspace="5" hspace="5" src="top88_26.png" alt=""> <img vspace="5" hspace="5" src="top88_27.png" alt=""> <img vspace="5" hspace="5" src="top88_28.png" alt=""> <img vspace="5" hspace="5" src="top88_29.png" alt=""> <img vspace="5" hspace="5" src="top88_30.png" alt=""> <img vspace="5" hspace="5" src="top88_31.png" alt=""> <img vspace="5" hspace="5" src="top88_32.png" alt=""> <img vspace="5" hspace="5" src="top88_33.png" alt=""> <img vspace="5" hspace="5" src="top88_34.png" alt=""> <img vspace="5" hspace="5" src="top88_35.png" alt=""> <img vspace="5" hspace="5" src="top88_36.png" alt=""> <img vspace="5" hspace="5" src="top88_37.png" alt=""> <img vspace="5" hspace="5" src="top88_38.png" alt=""> <img vspace="5" hspace="5" src="top88_39.png" alt=""> <img vspace="5" hspace="5" src="top88_40.png" alt=""> <img vspace="5" hspace="5" src="top88_41.png" alt=""> <img vspace="5" hspace="5" src="top88_42.png" alt=""> <img vspace="5" hspace="5" src="top88_43.png" alt=""> <img vspace="5" hspace="5" src="top88_44.png" alt=""> <img vspace="5" hspace="5" src="top88_45.png" alt=""> <img vspace="5" hspace="5" src="top88_46.png" alt=""> <img vspace="5" hspace="5" src="top88_47.png" alt=""> <img vspace="5" hspace="5" src="top88_48.png" alt=""> <img vspace="5" hspace="5" src="top88_49.png" alt=""> <img vspace="5" hspace="5" src="top88_50.png" alt=""> <img vspace="5" hspace="5" src="top88_51.png" alt=""> <img vspace="5" hspace="5" src="top88_52.png" alt=""> <img vspace="5" hspace="5" src="top88_53.png" alt=""> <img vspace="5" hspace="5" src="top88_54.png" alt=""> <img vspace="5" hspace="5" src="top88_55.png" alt=""> <img vspace="5" hspace="5" src="top88_56.png" alt=""> <img vspace="5" hspace="5" src="top88_57.png" alt=""> <img vspace="5" hspace="5" src="top88_58.png" alt=""> <img vspace="5" hspace="5" src="top88_59.png" alt=""> <img vspace="5" hspace="5" src="top88_60.png" alt=""> <img vspace="5" hspace="5" src="top88_61.png" alt=""> <img vspace="5" hspace="5" src="top88_62.png" alt=""> <img vspace="5" hspace="5" src="top88_63.png" alt=""> <img vspace="5" hspace="5" src="top88_64.png" alt=""> <img vspace="5" hspace="5" src="top88_65.png" alt=""> <img vspace="5" hspace="5" src="top88_66.png" alt=""> <img vspace="5" hspace="5" src="top88_67.png" alt=""> <img vspace="5" hspace="5" src="top88_68.png" alt=""> <img vspace="5" hspace="5" src="top88_69.png" alt=""> <img vspace="5" hspace="5" src="top88_70.png" alt=""> <img vspace="5" hspace="5" src="top88_71.png" alt=""> <img vspace="5" hspace="5" src="top88_72.png" alt=""> <img vspace="5" hspace="5" src="top88_73.png" alt=""> <img vspace="5" hspace="5" src="top88_74.png" alt=""> <img vspace="5" hspace="5" src="top88_75.png" alt=""> <img vspace="5" hspace="5" src="top88_76.png" alt=""> <img vspace="5" hspace="5" src="top88_77.png" alt=""> <img vspace="5" hspace="5" src="top88_78.png" alt=""> <img vspace="5" hspace="5" src="top88_79.png" alt=""> <img vspace="5" hspace="5" src="top88_80.png" alt=""> <img vspace="5" hspace="5" src="top88_81.png" alt=""> <img vspace="5" hspace="5" src="top88_82.png" alt=""> <img vspace="5" hspace="5" src="top88_83.png" alt=""> <img vspace="5" hspace="5" src="top88_84.png" alt=""> <img vspace="5" hspace="5" src="top88_85.png" alt=""> <img vspace="5" hspace="5" src="top88_86.png" alt=""> <img vspace="5" hspace="5" src="top88_87.png" alt=""> <img vspace="5" hspace="5" src="top88_88.png" alt=""> <img vspace="5" hspace="5" src="top88_89.png" alt=""> <img vspace="5" hspace="5" src="top88_90.png" alt=""> <img vspace="5" hspace="5" src="top88_91.png" alt=""> <img vspace="5" hspace="5" src="top88_92.png" alt=""> <img vspace="5" hspace="5" src="top88_93.png" alt=""> <img vspace="5" hspace="5" src="top88_94.png" alt=""> <img vspace="5" hspace="5" src="top88_95.png" alt=""> <img vspace="5" hspace="5" src="top88_96.png" alt=""> <img vspace="5" hspace="5" src="top88_97.png" alt=""> <img vspace="5" hspace="5" src="top88_98.png" alt=""> <img vspace="5" hspace="5" src="top88_99.png" alt=""> <img vspace="5" hspace="5" src="top88_100.png" alt=""> <img vspace="5" hspace="5" src="top88_101.png" alt=""> <img vspace="5" hspace="5" src="top88_102.png" alt=""> <img vspace="5" hspace="5" src="top88_103.png" alt=""> <img vspace="5" hspace="5" src="top88_104.png" alt=""> <img vspace="5" hspace="5" src="top88_105.png" alt=""> <img vspace="5" hspace="5" src="top88_106.png" alt=""> <img vspace="5" hspace="5" src="top88_107.png" alt=""> <img vspace="5" hspace="5" src="top88_108.png" alt=""> <img vspace="5" hspace="5" src="top88_109.png" alt=""> <img vspace="5" hspace="5" src="top88_110.png" alt=""> <img vspace="5" hspace="5" src="top88_111.png" alt=""> <img vspace="5" hspace="5" src="top88_112.png" alt=""> <img vspace="5" hspace="5" src="top88_113.png" alt=""> <img vspace="5" hspace="5" src="top88_114.png" alt=""> <img vspace="5" hspace="5" src="top88_115.png" alt=""> <img vspace="5" hspace="5" src="top88_116.png" alt=""> <img vspace="5" hspace="5" src="top88_117.png" alt=""> <img vspace="5" hspace="5" src="top88_118.png" alt=""> <img vspace="5" hspace="5" src="top88_119.png" alt=""> <img vspace="5" hspace="5" src="top88_120.png" alt=""> <img vspace="5" hspace="5" src="top88_121.png" alt=""> <img vspace="5" hspace="5" src="top88_122.png" alt=""> <img vspace="5" hspace="5" src="top88_123.png" alt=""> <img vspace="5" hspace="5" src="top88_124.png" alt=""> <img vspace="5" hspace="5" src="top88_125.png" alt=""> <img vspace="5" hspace="5" src="top88_126.png" alt=""> <img vspace="5" hspace="5" src="top88_127.png" alt=""> <img vspace="5" hspace="5" src="top88_128.png" alt=""> <img vspace="5" hspace="5" src="top88_129.png" alt=""> <img vspace="5" hspace="5" src="top88_130.png" alt=""> <img vspace="5" hspace="5" src="top88_131.png" alt=""> <img vspace="5" hspace="5" src="top88_132.png" alt=""> <img vspace="5" hspace="5" src="top88_133.png" alt=""> <img vspace="5" hspace="5" src="top88_134.png" alt=""> <img vspace="5" hspace="5" src="top88_135.png" alt=""> <img vspace="5" hspace="5" src="top88_136.png" alt=""> <img vspace="5" hspace="5" src="top88_137.png" alt=""> <img vspace="5" hspace="5" src="top88_138.png" alt=""> <img vspace="5" hspace="5" src="top88_139.png" alt=""> <img vspace="5" hspace="5" src="top88_140.png" alt=""> <img vspace="5" hspace="5" src="top88_141.png" alt=""> <img vspace="5" hspace="5" src="top88_142.png" alt=""> <img vspace="5" hspace="5" src="top88_143.png" alt=""> <img vspace="5" hspace="5" src="top88_144.png" alt=""> <img vspace="5" hspace="5" src="top88_145.png" alt=""> <img vspace="5" hspace="5" src="top88_146.png" alt=""> <img vspace="5" hspace="5" src="top88_147.png" alt=""> <img vspace="5" hspace="5" src="top88_148.png" alt=""> <img vspace="5" hspace="5" src="top88_149.png" alt=""> <img vspace="5" hspace="5" src="top88_150.png" alt=""> <img vspace="5" hspace="5" src="top88_151.png" alt=""> <img vspace="5" hspace="5" src="top88_152.png" alt=""> <img vspace="5" hspace="5" src="top88_153.png" alt=""> <img vspace="5" hspace="5" src="top88_154.png" alt=""> <img vspace="5" hspace="5" src="top88_155.png" alt=""> <img vspace="5" hspace="5" src="top88_156.png" alt=""> <img vspace="5" hspace="5" src="top88_157.png" alt=""> <img vspace="5" hspace="5" src="top88_158.png" alt=""> <img vspace="5" hspace="5" src="top88_159.png" alt=""> <img vspace="5" hspace="5" src="top88_160.png" alt=""> <img vspace="5" hspace="5" src="top88_161.png" alt=""> <img vspace="5" hspace="5" src="top88_162.png" alt=""> <img vspace="5" hspace="5" src="top88_163.png" alt=""> <img vspace="5" hspace="5" src="top88_164.png" alt=""> <img vspace="5" hspace="5" src="top88_165.png" alt=""> <img vspace="5" hspace="5" src="top88_166.png" alt=""> <img vspace="5" hspace="5" src="top88_167.png" alt=""> <img vspace="5" hspace="5" src="top88_168.png" alt=""> <img vspace="5" hspace="5" src="top88_169.png" alt=""> <img vspace="5" hspace="5" src="top88_170.png" alt=""> <img vspace="5" hspace="5" src="top88_171.png" alt=""> <img vspace="5" hspace="5" src="top88_172.png" alt=""> <img vspace="5" hspace="5" src="top88_173.png" alt=""> <img vspace="5" hspace="5" src="top88_174.png" alt=""> <img vspace="5" hspace="5" src="top88_175.png" alt=""> <img vspace="5" hspace="5" src="top88_176.png" alt=""> <img vspace="5" hspace="5" src="top88_177.png" alt=""> <img vspace="5" hspace="5" src="top88_178.png" alt=""> <img vspace="5" hspace="5" src="top88_179.png" alt=""> <img vspace="5" hspace="5" src="top88_180.png" alt=""> <img vspace="5" hspace="5" src="top88_181.png" alt=""> <img vspace="5" hspace="5" src="top88_182.png" alt=""> <img vspace="5" hspace="5" src="top88_183.png" alt=""> <img vspace="5" hspace="5" src="top88_184.png" alt=""> <img vspace="5" hspace="5" src="top88_185.png" alt=""> <img vspace="5" hspace="5" src="top88_186.png" alt=""> <img vspace="5" hspace="5" src="top88_187.png" alt=""> <img vspace="5" hspace="5" src="top88_188.png" alt=""> <img vspace="5" hspace="5" src="top88_189.png" alt=""> <img vspace="5" hspace="5" src="top88_190.png" alt=""> <img vspace="5" hspace="5" src="top88_191.png" alt=""> <img vspace="5" hspace="5" src="top88_192.png" alt=""> <img vspace="5" hspace="5" src="top88_193.png" alt=""> <img vspace="5" hspace="5" src="top88_194.png" alt=""> <img vspace="5" hspace="5" src="top88_195.png" alt=""> <img vspace="5" hspace="5" src="top88_196.png" alt=""> <img vspace="5" hspace="5" src="top88_197.png" alt=""> <img vspace="5" hspace="5" src="top88_198.png" alt=""> <img vspace="5" hspace="5" src="top88_199.png" alt=""> <img vspace="5" hspace="5" src="top88_200.png" alt=""> <img vspace="5" hspace="5" src="top88_201.png" alt=""> <img vspace="5" hspace="5" src="top88_202.png" alt=""> <img vspace="5" hspace="5" src="top88_203.png" alt=""> <img vspace="5" hspace="5" src="top88_204.png" alt=""> <img vspace="5" hspace="5" src="top88_205.png" alt=""> <img vspace="5" hspace="5" src="top88_206.png" alt=""> <img vspace="5" hspace="5" src="top88_207.png" alt=""> <img vspace="5" hspace="5" src="top88_208.png" alt=""> <img vspace="5" hspace="5" src="top88_209.png" alt=""> <img vspace="5" hspace="5" src="top88_210.png" alt=""> <img vspace="5" hspace="5" src="top88_211.png" alt=""> <img vspace="5" hspace="5" src="top88_212.png" alt=""> <img vspace="5" hspace="5" src="top88_213.png" alt=""> <img vspace="5" hspace="5" src="top88_214.png" alt=""> <img vspace="5" hspace="5" src="top88_215.png" alt=""> <img vspace="5" hspace="5" src="top88_216.png" alt=""> <img vspace="5" hspace="5" src="top88_217.png" alt=""> <img vspace="5" hspace="5" src="top88_218.png" alt=""> <img vspace="5" hspace="5" src="top88_219.png" alt=""> <img vspace="5" hspace="5" src="top88_220.png" alt=""> <img vspace="5" hspace="5" src="top88_221.png" alt=""> <img vspace="5" hspace="5" src="top88_222.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+
+[Y,I] = sort(x(:), <span class="string">'descend'</span>);
+vt = floor(((volfrac - 0.001) * nelx * nely) / (1 - 0.001));
+xd(I(1:vt)) = 1;
+xd(I(vt+1:end)) = 0.001;
+xd = reshape(xd, nely, nelx);
+
+colormap(gray); imagesc(1-xd); caxis([0 1]); axis <span class="string">equal</span>; axis <span class="string">off</span>; drawnow;
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%% AN 88 LINE TOPOLOGY OPTIMIZATION CODE Nov, 2010 %%%%
+clear
+%% Basic Inputs
+
+% Student Number = 1008247531;
+
+A = 5; B = 3; C = 1;
+
+%% Setting up the Geometry
+
+base_width = 50 + 70 + 10*B;
+tot_height = 250 + 10*A;
+
+P1 = 3;
+P2 = P1/(0.5*(C+1));
+
+nelx = base_width;
+nely = tot_height;
+volfrac = 0.166;
+penal = 3;
+rmin = 5;
+ft = 1;
+
+%% MATERIAL PROPERTIES
+E0 = 69;
+Emin = 1e-9;
+nu = 0.3;
+
+%% PREPARE FINITE ELEMENT ANALYSIS
+A11 = [12  3 -6 -3;  3 12  3  0; -6  3 12 -3; -3  0 -3 12];
+A12 = [-6 -3  0  3; -3 -6 -3 -6;  0 -3 -6  3;  3 -6  3 -6];
+B11 = [-4  3 -2  9;  3 -4 -9  4; -2 -9 -4 -3;  9  4 -3 -4];
+B12 = [ 2 -3  4 -9; -3  2  9 -2;  4  9  2  3; -9 -2  3  2];
+KE = 1/(1-nu^2)/24*([A11 A12;A12' A11]+nu*[B11 B12;B12' B11]);
+nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
+edofVec = reshape(2*nodenrs(1:end-1,1:end-1)+1,nelx*nely,1);
+edofMat = repmat(edofVec,1,8)+repmat([0 1 2*nely+[2 3 0 1] -2 -1],nelx*nely,1);
+iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);
+jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
+% DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
+F = sparse(2,1,-1,2*(nely+1)*(nelx+1),1);
+U = zeros(2*(nely+1)*(nelx+1),1);
+F(2*(nely+1)) = -P1;
+F(2*(nely+1)*(nelx+1)) = -P2;
+fixeddofs   = union(2*[(nely+1)*(0)+1]:2*(nely+1):2*[(nely+1)*(nelx)+1], 2*[(nely+1)*(0)+1]-1:2*(nely+1):2*[(nely+1)*(nelx)+1]-1);
+alldofs     = [1:2*(nely+1)*(nelx+1)];
+freedofs    = setdiff(alldofs,fixeddofs);
+%% PREPARE FILTER
+iH = ones(nelx*nely*(2*(ceil(rmin)-1)+1)^2,1);
+jH = ones(size(iH));
+sH = zeros(size(iH));
+k = 0;
+for i1 = 1:nelx
+  for j1 = 1:nely
+    e1 = (i1-1)*nely+j1;
+    for i2 = max(i1-(ceil(rmin)-1),1):min(i1+(ceil(rmin)-1),nelx)
+      for j2 = max(j1-(ceil(rmin)-1),1):min(j1+(ceil(rmin)-1),nely)
+        e2 = (i2-1)*nely+j2;
+        k = k+1;
+        iH(k) = e1;
+        jH(k) = e2;
+        sH(k) = max(0,rmin-sqrt((i1-i2)^2+(j1-j2)^2));
+      end
+    end
+  end
+end
+H = sparse(iH,jH,sH);
+Hs = sum(H,2);
+%% INITIALIZE ITERATION
+x = repmat(volfrac,nely,nelx);
+for ely = 1:nely
+    for elx = 1:nelx
+        if (ely < tot_height-50) && (elx < 50 || elx > 100)
+            passive(ely,elx) = 1;
+        else
+            passive(ely,elx) = 0;
+        end
+    end
+end
+
+x(find(passive))=0.001;
+
+xPhys = x;
+loop = 0;
+change = 1;
+%% START ITERATION
+while change > 0.01
+  loop = loop + 1;
+  %% FE-ANALYSIS
+  sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1);
+  K = sparse(iK,jK,sK); K = (K+K')/2;
+  U(freedofs) = K(freedofs,freedofs)\F(freedofs);
+  %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
+  ce = reshape(sum((U(edofMat)*KE).*U(edofMat),2),nely,nelx);
+  c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce));
+  dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
+  dv = ones(nely,nelx);
+  %% FILTERING/MODIFICATION OF SENSITIVITIES
+  if ft == 1
+    dc(:) = H*(x(:).*dc(:))./Hs./max(1e-3,x(:));
+  elseif ft == 2
+    dc(:) = H*(dc(:)./Hs);
+    dv(:) = H*(dv(:)./Hs);
+  end
+  %% OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
+  l1 = 0; l2 = 1e9; move = 0.2;
+  while (l2-l1)/(l1+l2) > 1e-3
+    lmid = 0.5*(l2+l1);
+    xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));
+    xnew(find(passive)) = 0.001;
+    if ft == 1
+      xPhys = xnew;
+    elseif ft == 2
+      xPhys(:) = (H*xnew(:))./Hs;
+    end
+    if sum(xPhys(:)) > volfrac*nelx*nely, l1 = lmid; else l2 = lmid; end
+  end
+  change = max(abs(xnew(:)-x(:)));
+  x = xnew;
+  %% PRINT RESULTS
+  fprintf(' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n',loop,c, ...
+    mean(xPhys(:)),change);
+  %% PLOT DENSITIES
+  colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
+end
+
+[Y,I] = sort(x(:), 'descend');
+vt = floor(((volfrac - 0.001) * nelx * nely) / (1 - 0.001));
+xd(I(1:vt)) = 1;
+xd(I(vt+1:end)) = 0.001;
+xd = reshape(xd, nely, nelx);
+
+colormap(gray); imagesc(1-xd); caxis([0 1]); axis equal; axis off; drawnow;
+
+
+
+##### SOURCE END #####
+--></body></html>

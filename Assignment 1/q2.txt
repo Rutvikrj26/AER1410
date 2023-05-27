@@ -1,0 +1,20 @@
+Gradient-based and Gradient-Free Optimization ae both methods used to optimize(maximize in some cases, minimize in others) a certain quantity.
+Taking a real-life approach, let's understand it in terms of a trade person. A businessman trades several goods in between two countries.
+For Each item he sells, he earns an amount of profit, which varies from item to item. So we have a profit per piece.
+Each item has a set amount that is sold by him each week. At last, he has a cargo arrangement, wherein he can carry only a specified quantity each week.
+
+So, as usual, we want to maximize profit. so, we can take two approaches at maximizing the profit.
+
+We have profit per piece and demand for the item. using this two, we can make an equation for the net weekly profit.
+Now, keeping the total cargo as constraint, we can see how the rate of change of profit with respect to both the profit per item and demand.
+This way we can trade the cargo in such a way that we earm maximum profit. 
+Here, the rate of change we calculate is the gradient of the profit with respect to the variables. This is a gradient-based approach.
+
+Second way we can approach the problem is to buid and indentify a pattern. We trade different items each week for a set number of weeks.
+we vary the quantity and the items. Over the weeks, we start seeing a pattern of which goods provide the maximum returns.
+Then, we further finetune the quantities and the items around the week that we got more profits and then finally reach maximum profit.
+Here, we are observing patterns and finetuning based on the previous patterns. Thus, no gradient calculations and hence, Gradient-Free Optimization.
+
+In both the approaches, we attain maximum profits, but do so in a different approach. In Gradient Method, we reach our conclusion early.
+The Gradient-Free Approach takes more amount of hit & Trial and thus requires more effort & time.
+Thus, we prefer to use Gradient-Based Optimization method in all possible scenarios.
